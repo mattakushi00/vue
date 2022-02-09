@@ -13,8 +13,24 @@ const app = {
             this.input = ''
         },
 
-        fillInput(e) {
-            this.input = e.target.value
+        deleteNote(index) {
+            this.notes.splice(index, 1)
+        },
+    },
+
+    /*выполняется только в случае изменения данных, а не когда происходит какое либо событие, в отличии от объекта methods*/
+    computed: {
+        countNote(arr) {
+            console.log('lal')
+            return this.notes.length
+        }
+    },
+
+    watch: {
+        input(val) {
+            if (val.length > 10) {
+                this.input = ''
+            }
         }
     }
 }

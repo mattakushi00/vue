@@ -5,26 +5,40 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Document</title>
+
+	<style>
+		.class1 {
+			color: #72149a;
+		}
+
+		.class2 {
+			color: #9a7f14;
+		}
+	</style>
 </head>
 <body>
 
 <div class="app" id="app">
-	<h1>{{title}}</h1>
+	<h1 :style="{color: input.length > 5 ? 'red' : 'darkred'}">{{title}}</h1>
 	<input
 			type="text"
-			v-bind:value="input"
-			v-bind:placeholder="placeHold"
-			v-on:input="fillInput"
-			v-on:keypress.enter="addNote"
+			v-model="input"
+			:placeholder="placeHold"
+			@keypress.enter="addNote"
 	>
 	<button
-			v-on:click="addNote"
+			@click="addNote"
 	>Add</button>
-	<div class="ul">
+	<ul class="ul" v-if="notes.length !== 0">
 		<li
-		v-for="note in notes"
-		>{{ note }}</li>
-	</div>
+		v-for="(note, index) in notes"
+		>
+			<span :class="note.length > 5 ? 'class1' : 'class2'">{{ note }}</span>
+			<button @click="deleteNote(index)">delete</button></li>
+	</ul>
+	<p v-else>список заметок пуст</p>
+	<hr>
+	<p>количество заметок - {{countNote}}</p>
 </div>
 
 <script src="https://unpkg.com/vue@next"></script>
