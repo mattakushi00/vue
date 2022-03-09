@@ -1,38 +1,84 @@
-const app = {
+const app = Vue.createApp({
     data() {
         return {
-            title: 'Заметки',
-            input: '',
-            placeHold: 'ваша заметка',
-            notes: [1, 2, 3]
+            list: [
+                {
+                    title: 'Основы',
+                    description: 'тут гигантское описание для блока Основы',
+                    active: true
+                },
+                {
+                    title: 'Компоненты',
+                    description: 'а тут какое то описание для блока Компоненты'
+                },
+                {
+                    title: 'Роутер',
+                    description: 'и еще здесь тоже чет про описание для блока Роутер'
+                },
+                {
+                    title: 'Vuex',
+                    description: 'да и тут какого то хуя описание для блока Vuex'
+                },
+                {
+                    title: 'Composition',
+                    description: 'Описание для блока Composition'
+                },
+            ]
         }
     },
     methods: {
-        addNote(e) {
-            this.notes.push(this.input)
-            this.input = ''
+        zero(val) {
+            return val.toString().length === 1 ? `0${val}` : val
         },
 
-        deleteNote(index) {
-            this.notes.splice(index, 1)
+        getActive(index) {
+            this.list.forEach(item => {
+                if (item.active) {
+                    delete item.active
+                    return
+                }
+            })
+            this.list[index].active = true
         },
-    },
 
-    /*выполняется только в случае изменения данных, а не когда происходит какое либо событие, в отличии от объекта methods*/
-    computed: {
-        countNote(arr) {
-            console.log('lal')
-            return this.notes.length
-        }
-    },
+        getLast(targetIndex) {
+             /*TODO добавить классы пройденных курсов*/
+        },
 
-    watch: {
-        input(val) {
-            if (val.length > 10) {
-                this.input = ''
+        next(event) {
+            let activeItem = findActive(this.list)
+
+            delete this.list[activeItem].active
+            if (!(this.list[activeItem + 1] === this.list[this.list.length - 1])) {
+                this.list[activeItem + 1].active = true
+                event.target.disabled = false
+                return
             }
-        }
-    }
-}
+            event.target.disabled = true
+            this.list[this.list.length - 1].active = true
+            /*TODO активировать кнопки, если выбран не первый и не последний курс*/
+        },
 
-Vue.createApp(app).mount('#app')
+        last(event) {
+            let activeItem = findActive(this.list)
+
+            delete this.list[activeItem].active
+            if (!(this.list[activeItem - 1] === this.list[0])) {
+                this.list[activeItem - 1].active = true
+                event.target.disabled = false
+                return
+            }
+            event.target.disabled = true
+            this.list[0].active = true
+        }
+
+    }
+})
+
+app.mount('#app')
+
+function findActive(arr) {
+    let activeIndex = ''
+    arr.forEach((item, index) => item.active ? activeIndex = index : undefined)
+    return activeIndex
+}
