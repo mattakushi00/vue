@@ -23,7 +23,8 @@ const app = Vue.createApp({
                     title: 'Composition',
                     description: 'Описание для блока Composition'
                 },
-            ]
+            ],
+            data: ''
         }
     },
     methods: {
@@ -42,37 +43,47 @@ const app = Vue.createApp({
         },
 
         getLast(targetIndex) {
-             /*TODO добавить классы пройденных курсов*/
+            /*TODO добавить классы пройденных курсов*/
         },
 
-        next(event) {
+        next() {
             let activeItem = findActive(this.list)
 
             delete this.list[activeItem].active
             if (!(this.list[activeItem + 1] === this.list[this.list.length - 1])) {
                 this.list[activeItem + 1].active = true
-                event.target.disabled = false
                 return
             }
-            event.target.disabled = true
             this.list[this.list.length - 1].active = true
-            /*TODO активировать кнопки, если выбран не первый и не последний курс*/
         },
 
-        last(event) {
+        last() {
             let activeItem = findActive(this.list)
 
             delete this.list[activeItem].active
             if (!(this.list[activeItem - 1] === this.list[0])) {
                 this.list[activeItem - 1].active = true
-                event.target.disabled = false
                 return
             }
-            event.target.disabled = true
             this.list[0].active = true
-        }
+        },
 
-    }
+        btnDisable() {
+            const targetIndex = findActive(this.list) + 1
+            if (targetIndex === this.list.length) {
+                document.querySelector('.btn_forward').disabled = true
+            } else {
+                document.querySelector('.btn_forward').disabled = false
+            }
+
+            if (targetIndex === 1) {
+                document.querySelector('.btn_back').disabled = true
+            } else {
+                document.querySelector('.btn_back').disabled = false
+            }
+        },
+
+    },
 })
 
 app.mount('#app')

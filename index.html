@@ -109,7 +109,7 @@
 					class="nav__item"
 					v-for="(item, index) in list"
 					:class="{nav__item_active: item.active, nav__item_last: getLast(index)}"
-					@click="getActive(index)"
+					@click="getActive(index), btnDisable()"
 			>
 				<div class="nav__numb">{{zero(index + 1)}}</div>
 				<h2 class="nav__title">{{item.title}}</h2>
@@ -117,13 +117,13 @@
 		</nav>
 		<div class="buttons">
 			<button
-					class="btn"
-					@click="last($event)"
+					class="btn btn_back"
+					@click="last(), btnDisable()"
 			>назад
 			</button>
 			<button
 					class="btn btn_forward"
-					@click="next($event)"
+					@click="next(), btnDisable()"
 			>вперед
 			</button>
 		</div>
