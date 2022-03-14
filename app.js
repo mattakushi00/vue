@@ -5,7 +5,8 @@ const app = Vue.createApp({
                 {
                     title: 'Основы',
                     description: 'тут гигантское описание для блока Основы',
-                    active: true
+                    active: true,
+                    completed: false,
                 },
                 {
                     title: 'Компоненты',
@@ -24,7 +25,6 @@ const app = Vue.createApp({
                     description: 'Описание для блока Composition'
                 },
             ],
-            data: ''
         }
     },
     methods: {
@@ -32,56 +32,65 @@ const app = Vue.createApp({
             return val.toString().length === 1 ? `0${val}` : val
         },
 
-        getActive(index) {
-            this.list.forEach(item => {
-                if (item.active) {
-                    delete item.active
-                    return
+        getActiveItem(index) {
+            const previousIndex = findActive(this.list)
+
+            if (index > previousIndex) {
+                delete this.list[previousIndex].active
+                this.list[index].active = true
+
+                for (let i = 0; i < index; i++) {
+                    this.list[i].completed = true
                 }
-            })
-            this.list[index].active = true
-        },
 
-        getLast(targetIndex) {
-            /*TODO добавить классы пройденных курсов*/
-        },
-
-        next() {
-            let activeItem = findActive(this.list)
-
-            delete this.list[activeItem].active
-            if (!(this.list[activeItem + 1] === this.list[this.list.length - 1])) {
-                this.list[activeItem + 1].active = true
                 return
             }
-            this.list[this.list.length - 1].active = true
+
+            delete this.list[previousIndex].active
+            this.list[index].active = true
+
+            for (let i = index; i < this.list.length; i++) {
+                delete this.list[i].completed
+            }
         },
 
-        last() {
-            let activeItem = findActive(this.list)
+        previousItem() {
+            let activeIndex = findActive(this.list)
 
-            delete this.list[activeItem].active
-            if (!(this.list[activeItem - 1] === this.list[0])) {
-                this.list[activeItem - 1].active = true
+            delete this.list[activeIndex].active
+            if (!(this.list[activeIndex - 1] === this.list[0])) {
+                this.list[activeIndex - 1].active = true
+                delete this.list[activeIndex - 1].completed
                 return
             }
             this.list[0].active = true
+            delete this.list[0].completed
         },
 
-        btnDisable() {
-            const targetIndex = findActive(this.list) + 1
-            if (targetIndex === this.list.length) {
-                document.querySelector('.btn_forward').disabled = true
-            } else {
-                document.querySelector('.btn_forward').disabled = false
-            }
+        nextItem() {
+            let activeIndex = findActive(this.list)
 
-            if (targetIndex === 1) {
-                document.querySelector('.btn_back').disabled = true
-            } else {
-                document.querySelector('.btn_back').disabled = false
+            if (
+                !(this.list[activeIndex + 1] === this.list[this.list.length - 1])
+                && !(this.list[activeIndex] === this.list[this.list.length - 1])
+            ) {
+                delete this.list[activeIndex].active
+                this.list[activeIndex].completed = true
+                this.list[activeIndex + 1].active = true
+                return
             }
+            delete this.list[activeIndex].active
+            this.list[activeIndex].completed = true
+            this.list[this.list.length - 1].active = true
         },
+
+        finish() {
+            for (let i = 0; i < this.list.length; i++) {
+                delete this.list[i].completed
+                delete this.list[i].active
+            }
+            this.list[0].active = true
+        }
 
     },
 })

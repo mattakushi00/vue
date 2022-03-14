@@ -60,11 +60,12 @@
 		}
 
 		.nav__item_active .nav__numb {
-			background-color: antiquewhite;
+			background-color: #8bce87;
+			color: #fff;
 		}
 
 		.nav__item_last .nav__numb {
-			background-color: #777777;
+			background-color: #8bce87;
 		}
 
 		.hide {
@@ -88,6 +89,10 @@
 		.btn_forward {
 			background-color: #8bce87;
 		}
+		
+		.disable {
+			cursor: not-allowed;
+		}
 
 	</style>
 </head>
@@ -108,8 +113,8 @@
 			<div
 					class="nav__item"
 					v-for="(item, index) in list"
-					:class="{nav__item_active: item.active, nav__item_last: getLast(index)}"
-					@click="getActive(index), btnDisable()"
+					:class="{nav__item_active: item.active, nav__item_last: item.completed}"
+					@click="getActiveItem(index)"
 			>
 				<div class="nav__numb">{{zero(index + 1)}}</div>
 				<h2 class="nav__title">{{item.title}}</h2>
@@ -118,13 +123,23 @@
 		<div class="buttons">
 			<button
 					class="btn btn_back"
-					@click="last(), btnDisable()"
+					:class="{disable: list[0].active}"
+					@click="previousItem()"
+					:disabled="list[0].active"
+					v-if="!list[list.length - 1].completed"
 			>назад
 			</button>
 			<button
 					class="btn btn_forward"
-					@click="next(), btnDisable()"
-			>вперед
+					@click="nextItem()"
+					v-if="!list[list.length - 1].completed"
+			>Вперед
+			</button>
+			<button
+				class="btn btn_back"
+				@click="finish()"
+				v-else
+			>Завершить
 			</button>
 		</div>
 	</div>
