@@ -1,26 +1,50 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <the-create-item :schema="schema"
+                   @createItem="createItem()"
+  />
+
+  <the-list :list="list"
+            @addList="getBd()"
+  />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TheList from '@/components/TheList'
+import TheCreateItem from '@/components/TheCreateItem'
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+  data () {
+    return {
+      list: [],
+      schema: {}
+    }
+  },
+  methods: {
+    async getBd () {
+      const response = await fetch('http://localhost:5000/api/main')
+      const bd = await response.json()
+      this.list = bd.list
+    },
+    async createItem () {
+      const response = await fetch('http://localhost:5000/api/main')
+      const bd = await response.json()
+      this.schema = bd.schema
+      console.log(bd)
+    }
+  },
+  components: { TheList, TheCreateItem }
 }
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style>
+button {
+  margin: 10px;
+}
+
+.list,
+.create {
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 10px 0;
 }
 </style>
