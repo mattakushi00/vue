@@ -1,6 +1,8 @@
 <template>
   <div class="create">
-    <form class="form">
+    <form class="form"
+          @submit.prevent="addItem()"
+    >
       <input v-for="(key, value) in schema.name"
              :name="`name_${value}`"
              :key="value"
@@ -12,14 +14,25 @@
              :key="value"
              :placeholder="value"
       >
+      <button>Добавить</button>
     </form>
-    <button @click="$emit('createItem')">Создать новый item</button>
   </div>
 </template>
 
 <script>
 export default {
   emits: ['createItem'],
-  props: ['schema']
+  props: ['schema'],
+  methods: {
+    async addItem () {
+      console.log(this.schema)
+      /*
+      const response = await fetch('localhost:5000/api/create', {
+        method: 'post',
+        body: new FormData(document.querySelector('.form'))
+      })
+*/
+    }
+  }
 }
 </script>
