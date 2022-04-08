@@ -8,7 +8,6 @@
          :key="val"
       ><b>{{val}}</b>: {{prop}}</p>
     </div>
-    <button @click="addList()">Загрузить бд</button>
   </div>
 </template>
 
@@ -17,11 +16,6 @@ export default {
   emits: ['addList'],
   props: {
     list: Array
-  },
-  methods: {
-    addList () {
-      this.$emit('addList')
-    }
   }
 }
 </script>

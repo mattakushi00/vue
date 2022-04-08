@@ -1,12 +1,11 @@
 <template>
   <the-create-item :schema="schema"
-                   @createItem="getBd()"
+                   @addOne="addItem($event)"
   />
-
   <the-list :list="list"
             @addList="getBd()"
   />
-  <p>{{ schema }}</p>
+  <p></p>
 </template>
 
 <script>
@@ -19,7 +18,8 @@ export default {
   data () {
     return {
       list: [],
-      schema: {}
+      schema: {},
+      lal: 1
     }
   },
   methods: {
@@ -27,14 +27,21 @@ export default {
       const response = await fetch('http://localhost:5000/api/main')
       const bd = await response.json()
       this.list = bd.list
-    }
-  },
-  mounted: {
-    async getSchema () {
-      const response = await fetch('http://localhost:5000/api/main')
-      const bd = await response.json()
       this.schema = bd.schema
+    },
+
+    async addItem ({ target }) {
+      await fetch('http://localhost:5000/api/create', {
+        method: 'post',
+        body: new FormData(target)
+      })
+
+      await this.getBd()
     }
+
+  },
+  mounted () {
+    this.getBd()
   },
   components: {
     TheList,
