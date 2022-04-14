@@ -4,8 +4,12 @@
             @newData=addToArray
     />
     <theResume :types="types"
-               :data="userData"/>
-    <theComments/>
+               :data="userData"
+    />
+    <theComments :bd="bd"
+                 @loadBd="loadDataBase()"
+    />
+    <theLoading :loading="loading"/>
   </div>
 </template>
 
@@ -13,28 +17,54 @@
 import theComments from '@/components/theComments'
 import theResume from '@/components/theResume'
 import theSet from '@/components/theSet'
+import theLoading from '@/components/theLoading'
 
 export default {
   data () {
     return {
       types: [
-        { type: 'Заголовок', components: 'theTitle' },
-        { type: 'Аватар', components: 'theAvatar' },
-        { type: 'Подзаголовок', components: 'theSubtitle' },
-        { type: 'Текст', components: 'theText' }
+        {
+          type: 'Заголовок',
+          components: 'theTitle'
+        },
+        {
+          type: 'Аватар',
+          components: 'theAvatar'
+        },
+        {
+          type: 'Подзаголовок',
+          components: 'theSubtitle'
+        },
+        {
+          type: 'Текст',
+          components: 'theText'
+        }
       ],
-      userData: []
+      userData: [],
+      bd: null,
+      loading: false
     }
   },
   methods: {
     addToArray (data) {
       this.userData.push(data)
+    },
+
+    loadDataBase () {
+      this.loading = true
+      setTimeout(async () => {
+        const responce = await fetch('http://localhost:5000/api/main')
+        const data = await responce.json()
+        this.bd = data.list
+        this.loading = false
+      }, 2000)
     }
   },
   components: {
     theComments,
     theResume,
-    theSet
+    theSet,
+    theLoading
   }
 }
 </script>
@@ -107,5 +137,24 @@ body {
   transform: translate(-50%, -50%);
   object-fit: cover;
   object-position: center;
+}
+
+.loader {
+  width: 100px;
+  height: 100px;
+  border-top: 10px solid #ffa600;
+  border-radius: 50%;
+  animation: circle 2s linear infinite;
+  margin: 10px auto;
+}
+
+@keyframes circle {
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
