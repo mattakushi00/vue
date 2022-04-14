@@ -13,6 +13,7 @@
     ></textarea>
     <button class="set__item"
             @click="addData($emit)"
+            :disabled="this.value < 4"
     >Добавить
     </button>
   </div>
